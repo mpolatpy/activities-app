@@ -18,21 +18,17 @@ import ModalContainer from '../common/modals/ModalContainer';
 
 function App() {
   const location = useLocation();
-  const {userStore, commonStore} = useStore();
+  const {commonStore, userStore} = useStore();
 
   useEffect(() => {
-    if(commonStore.token){
+    if (commonStore.token) {
       userStore.getUser().finally(() => commonStore.setAppLoaded());
-    } else{
+    } else {
       commonStore.setAppLoaded();
     }
-  }, [commonStore, userStore]);
+  }, [commonStore, userStore])
 
-  if(!commonStore.appLoaded){
-    return (
-      <LoadingComponent content="Loading app..." />
-    )
-  }
+  if (!commonStore.appLoaded) return <LoadingComponent content='Loading app...' />
 
   return (
     <>
@@ -51,7 +47,7 @@ function App() {
                 <Route key={location.key} path={['/createActivity', '/manage/:id']} component={ActivityForm} />
                 <Route path='/errors' component={TestErrors} />
                 <Route path='/server-error' component={ServerError} />
-                <Route path="/login" component={LoginForm}/>
+                <Route path='/login' component={LoginForm} />
                 <Route component={NotFound} />
               </Switch>
             </Container>

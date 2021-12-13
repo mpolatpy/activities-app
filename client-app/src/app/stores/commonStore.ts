@@ -9,12 +9,13 @@ export default class CommonStore {
     constructor() {
         makeAutoObservable(this);
 
-        reaction(() => this.token,
+        reaction(
+            () => this.token,
             token => {
-                if(token){
-                    window.localStorage.setItem('jwt', token);
+                if (token) {
+                    window.localStorage.setItem('jwt', token)
                 } else {
-                    window.localStorage.removeItem('jwt');
+                    window.localStorage.removeItem('jwt')
                 }
             }
         )
@@ -28,5 +29,7 @@ export default class CommonStore {
         this.token = token;
     }
 
-    setAppLoaded = () => this.appLoaded = true;
+    setAppLoaded = () => {
+        this.appLoaded = true;
+    }
 }
