@@ -21,7 +21,7 @@ export const store: Store = {
     userStore: new UserStore(),
     modalStore: new ModalStore(),
     profileStore: new ProfileStore(),
-    commentStore: new CommentStore(),
+    commentStore: new CommentStore()
 }
 
 export const StoreContext = createContext(store);

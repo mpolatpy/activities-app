@@ -7,41 +7,42 @@ export default class CommentStore {
     comments: ChatComment[] = [];
     hubConnection: HubConnection | null = null;
 
-    constructor(){
+    constructor() {
         makeAutoObservable(this);
     }
 
     createHubConnection = (activityId: string) => {
-        if(store.activityStore.selectedActivity){
+        if (store.activityStore.selectedActivity) {
             this.hubConnection = new HubConnectionBuilder()
-                .withUrl(`http://localhost:5000/chat?activityId=${activityId}`, {
+                .withUrl('http://localhost:5000/chat?activityId=' + activityId, {
                     accessTokenFactory: () => store.userStore.user?.token!
                 })
                 .withAutomaticReconnect()
                 .configureLogging(LogLevel.Information)
                 .build();
-            
-            this.hubConnection.start().catch(e => console.log("Error establishing the connection: ", e));
-            this.hubConnection.on("LoadComments", (comments: ChatComment[]) => {
-                runInAction(() => {
-                    comments.forEach(
-                        comment => comment.createdAt = new Date(comment.createdAt + 'Z') // handle UTC time issue on the initial load from server
-                    );
-                    this.comments = comments;
-                });
-            });
 
-            this.hubConnection.on("ReceiveComment", (comment: ChatComment) => {
+            this.hubConnection.start().catch(error => console.log('Error establishing the connection: ', error));
+
+            this.hubConnection.on('LoadComments', (comments: ChatComment[]) => {
                 runInAction(() => {
-                    comment.createdAt = new Date(comment.createdAt)
+                    comments.forEach(comment => {
+                        comment.createdAt = new Date(comment.createdAt + 'Z');
+                    })
+                    this.comments = comments
+                });
+            })
+
+            this.hubConnection.on('ReceiveComment', (comment: ChatComment) => {
+                runInAction(() => {
+                    comment.createdAt = new Date(comment.createdAt);
                     this.comments.unshift(comment)
                 });
-            });
+            })
         }
     }
 
     stopHubConnection = () => {
-        this.hubConnection?.stop().catch(e => console.log("Error stopping connection: ", e));
+        this.hubConnection?.stop().catch(error => console.log('Error stopping connection: ', error));
     }
 
     clearComments = () => {
@@ -51,12 +52,10 @@ export default class CommentStore {
 
     addComment = async (values: any) => {
         values.activityId = store.activityStore.selectedActivity?.id;
-
         try {
-            this.hubConnection?.invoke("SendComment", values);
-        } catch(e){
-            console.log(e);
+            await this.hubConnection?.invoke('SendComment', values);
+        } catch (error) {
+            console.log(error);
         }
-
     }
- }
+}

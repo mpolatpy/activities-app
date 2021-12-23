@@ -15,9 +15,7 @@ export default observer(function ActivityDetails() {
     const {id} = useParams<{id: string}>();
 
     useEffect(() => {
-        if (id) 
-            loadActivity(id);
-
+        if (id) loadActivity(id);
         return () => clearSelectedActivity();
     }, [id, loadActivity, clearSelectedActivity]);
 

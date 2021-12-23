@@ -9,7 +9,7 @@ interface Props {
     profile: Profile;
 }
 
-const ProfilePhotos = ({ profile }: Props) => {
+export default observer(function ProfilePhotos({ profile }: Props) {
     const { profileStore: { isCurrentUser, uploadPhoto, 
             uploading, loading, setMainPhoto, deletePhoto } } = useStore();
     const [addPhotoMode, setAddPhotoMode] = useState(false);
@@ -79,6 +79,4 @@ const ProfilePhotos = ({ profile }: Props) => {
             </Grid>
         </Tab.Pane>
     )
-}
-
-export default observer(ProfilePhotos);
+})

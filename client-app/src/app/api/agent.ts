@@ -43,7 +43,7 @@ axios.interceptors.response.use(async response => {
             }
             break;
         case 401:
-            toast.error('unauthorized');
+            toast.error('unauthorised');
             break;
         case 404:
             history.push('/not-found');
@@ -84,14 +84,17 @@ const Profiles = {
     get: (username: string) => requests.get<Profile>(`/profiles/${username}`),
     uploadPhoto: (file: Blob) => {
         let formData = new FormData();
-        formData.append('File',file);
-
+        formData.append('File', file);
         return axios.post<Photo>('photos', formData, {
             headers: {'Content-type': 'multipart/form-data'}
-        });
+        })
     },
-    setMainPhoto: (id: string) => requests.post(`/photos/${id}/setmain`, {}), 
-    deletePhoto: (id: string) => requests.del(`/photos/${id}`), 
+    setMainPhoto: (id: string) => requests.post(`/photos/${id}/setMain`, {}),
+    deletePhoto: (id: string) => requests.del(`/photos/${id}`),
+    updateProfile: (profile: Partial<Profile>) => requests.put(`/profiles`, profile),
+    updateFollowing: (username: string) => requests.post(`/follow/${username}`, {}),
+    listFollowings: (username: string, predicate: string) => 
+        requests.get<Profile[]>(`/follow/${username}?predicate=${predicate}`)
 }
 
 const agent = {
