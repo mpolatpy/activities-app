@@ -53,6 +53,9 @@ namespace API
 
             app.UseRouting();
 
+            app.UseDefaultFiles();
+            app.UseStaticFiles(); // if the folder is not called wwwroot, then configure it
+
             app.UseCors("CorsPolicy");
 
             app.UseAuthentication();
@@ -63,6 +66,7 @@ namespace API
             {
                 endpoints.MapControllers();
                 endpoints.MapHub<ChatHub>("/chat");
+                endpoints.MapFallbackToController("Index", "Fallback"); // UI routing 
             });
         }
     }
